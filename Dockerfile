@@ -1,14 +1,12 @@
-# Use a minimal Java 17 runtime
-FROM openjdk:17-jdk-slim
-
-# Set working directory
+# Step 1: Use Maven image to build the project
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Copy the built JAR file into the image
-COPY build/libs/*.jar app.jar
-
-# Expose service port (match application.yml port if needed)
+# Step 2: Use slim OpenJDK image to run the JAR
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8082
-
-# Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]

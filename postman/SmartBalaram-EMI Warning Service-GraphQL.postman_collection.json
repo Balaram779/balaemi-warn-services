@@ -1,0 +1,259 @@
+{
+	"info": {
+		"_postman_id": "99e63469-28f3-49c4-946b-74871befc6d0",
+		"name": "SmartBalaram-EMI Warning Service-GraphQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45680615",
+		"_collection_link": "https://balaram-9724924.postman.co/workspace/Balaram's-Workspace~b86bd639-5fdc-4563-8103-4d1b26d1bb59/collection/45680615-99e63469-28f3-49c4-946b-74871befc6d0?action=share&source=collection_link&creator=45680615"
+	},
+	"item": [
+		{
+			"name": "1.Evaluate EMI",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation EvaluateEmi($input: EmiInput!) {\r\n  evaluateEmi(input: $input) {\r\n    userId\r\n    monthlyIncome\r\n    totalEmiAmount\r\n    warning\r\n    emiPercentage\r\n    riskLevel\r\n    warningMessage\r\n    suggestedMaxEmi\r\n  }\r\n}\r\n",
+						"variables": "{\r\n  \"input\": {\r\n    \"userId\": \"user123\",\r\n    \"monthlyIncome\": 50000,\r\n    \"totalEmiAmount\": 20000,\r\n    \"missedEmiCount\": 2,\r\n    \"loanTenureMonths\": 12\r\n  }\r\n}\r\n"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2.Save EMI",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation SaveEmi($input: EmiInput!) {\r\n  saveEmi(input: $input) {\r\n    userId\r\n    riskLevel\r\n    warning\r\n  }\r\n}\r\n",
+						"variables": "{\r\n  \"input\": {\r\n    \"userId\": \"user456\",\r\n    \"monthlyIncome\": 50000.0,\r\n    \"totalEmiAmount\": 20000.0,\r\n    \"missedEmiCount\": 2,\r\n    \"loanTenureMonths\": 24\r\n  }\r\n}\r\n"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3.Get All EMIs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\r\n  allEmiRecords {\r\n    userId\r\n    monthlyIncome\r\n    totalEmiAmount\r\n    warning\r\n    emiPercentage\r\n    riskLevel\r\n    warningMessage\r\n  }\r\n}\r\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4.Get EMI By ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query GetEmiById($userId: String!) {\r\n  getEmiById(userId: $userId) {\r\n    userId\r\n    monthlyIncome\r\n    totalEmiAmount\r\n    warning\r\n    emiPercentage\r\n    riskLevel\r\n    warningMessage\r\n  }\r\n}\r\n",
+						"variables": "{\r\n  \"userId\": \"userId\"\r\n}\r\n"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.Delete EMI By ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation DeleteEmi($userId: String!) {\r\n  deleteEmiById(userId: $userId)\r\n}\r\n",
+						"variables": "{\r\n  \"userId\": \"U002\"\r\n}\r\n"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6.Get Risk Level",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query GetRiskLevel($percentage: Float!) {\r\n  getRiskLevel(percentage: $percentage)\r\n}\r\n",
+						"variables": "{\r\n  \"percentage\": 40.0\r\n}\r\n"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7.Get Recommended Cap",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query GetRecommendedCap($monthlyIncome: Float!) {\r\n  getRecommendedCap(monthlyIncome: $monthlyIncome)\r\n}\r\n",
+						"variables": "{\r\n  \"monthlyIncome\": 60000.0\r\n}\r\n"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8.Get Threshold Details",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\r\n  getThresholdDetails\r\n}\r\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

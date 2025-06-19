@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmiWarningController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">emi-warning-service</a> &gt; <a href="index.source.html" class="el_package">com.smartbalaram.emi.controller</a> &gt; <span class="el_source">EmiWarningController.java</span></div><h1>EmiWarningController.java</h1><pre class="source lang-java linenums">package com.smartbalaram.emi.controller;
+
+import com.smartbalaram.emi.model.EmiRequest;
+import com.smartbalaram.emi.model.EmiResponse;
+import com.smartbalaram.emi.service.EmiWarningService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for EMI warning service. Handles requests related to EMI
+ * evaluation, risk level, cap calculation, etc.
+ */
+@RestController
+@RequestMapping(&quot;/api/emi&quot;) // Base URL for all endpoints in this controller
+<span class="fc" id="L18">@RequiredArgsConstructor // Auto-generates constructor for final fields (emiWarningService)</span>
+//@CrossOrigin(origins = &quot;*&quot;) // ✅ Allow local React access
+public class EmiWarningController {
+
+	private final EmiWarningService emiWarningService;
+
+	/**
+	 * Endpoint to evaluate EMI risk based on EMI amount and income.
+	 * 
+	 * @param request Incoming request with EMI details.
+	 * @return EMI evaluation response containing risk level and message.
+	 */
+	@PostMapping(&quot;/warn&quot;)
+	public ResponseEntity&lt;EmiResponse&gt; getEmiWarning(@RequestBody EmiRequest request) {
+<span class="fc" id="L32">		return ResponseEntity.ok(emiWarningService.evaluateEmi(request));</span>
+	}
+
+	/**
+	 * Endpoint to get recommended EMI cap for a given income. Example logic: 40% of
+	 * monthly income.
+	 * 
+	 * @param monthlyIncome Monthly income of the user.
+	 * @return Recommended maximum EMI value.
+	 */
+	@GetMapping(&quot;/cap/{monthlyIncome}&quot;)
+	public ResponseEntity&lt;Double&gt; getRecommendedEmiCap(@PathVariable(&quot;monthlyIncome&quot;) double monthlyIncome) {
+<span class="fc" id="L44">		return ResponseEntity.ok(emiWarningService.getRecommendedCap(monthlyIncome));</span>
+	}
+
+	/**
+	 * Endpoint to get risk level for a given EMI-to-income percentage.
+	 * 
+	 * @param percentage EMI percentage of income.
+	 * @return Risk level (LOW, MODERATE, HIGH).
+	 */
+	@GetMapping(&quot;/risk/{percentage}&quot;)
+	public ResponseEntity&lt;String&gt; getRiskLevel(@PathVariable(&quot;percentage&quot;) double percentage) {
+<span class="fc" id="L55">		return ResponseEntity.ok(emiWarningService.getRiskLevel(percentage));</span>
+	}
+
+	/**
+	 * Endpoint to retrieve all configured EMI risk threshold messages.
+	 * 
+	 * @return List of threshold messages.
+	 */
+	@GetMapping(&quot;/thresholds&quot;)
+	public ResponseEntity&lt;List&lt;String&gt;&gt; getThresholdDefinitions() {
+<span class="fc" id="L65">		return ResponseEntity.ok(emiWarningService.getThresholdDetails());</span>
+	}
+
+	/**
+	 * Health check endpoint to verify service is running.
+	 * 
+	 * @return Success message if service is up.
+	 */
+	@GetMapping(&quot;/ping&quot;)
+	public String ping() {
+<span class="fc" id="L75">		return &quot;✅ EMI service is up!&quot;;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

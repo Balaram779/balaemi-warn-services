@@ -1,0 +1,7 @@
+{
+  "userId": "user123",
+  "monthlyIncome": 50000.0,
+  "totalEmiAmount": 30000.0,
+  "missedEmiCount": 1,
+  "loanTenureMonths": 24
+}

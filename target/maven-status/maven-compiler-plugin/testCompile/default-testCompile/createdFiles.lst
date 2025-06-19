@@ -1,0 +1,4 @@
+com\smartbalaram\emi\kafka\KafkaProducerServiceTest.class
+com\smartbalaram\emi\controller\EmiWarningControllerTest.class
+com\smartbalaram\emi\util\RiskLevelUtilsTest.class
+com\smartbalaram\emi\service\EmiWarningServiceTest.class

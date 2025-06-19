@@ -1,0 +1,45 @@
+server:
+  port: 8082
+
+spring:
+  profiles:
+    active: dev   # ✅ Activate dev profile to load application-dev.yml
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/emiwarning-db
+
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  graphql:
+    path: /graphql
+
+    # Enable the GraphiQL UI
+    graphiql:
+      enabled: true
+      path: /graphiql
+
+    # Optional: Voyager UI if you're using it
+    voyager:
+      enabled: true
+      path: /voyager
+
+  web:
+    resources:
+      add-mappings: true
+
+logging:
+  level:
+    org.springframework.graphql: DEBUG
+
+risk:
+ weight-emi-percent: 0.6         # AI input weight for EMI load
+ weight-missed-emi: 2.0          # Higher weight to missed EMIs (big red flag)
+ weight-tenure: 0.1              # Minor weight to loan duration
+ score-threshold-low: 30         # Below 30 → LOW risk
+ score-threshold-medium: 60      # 30–60 → MODERATE risk; >60 → HIGH
+

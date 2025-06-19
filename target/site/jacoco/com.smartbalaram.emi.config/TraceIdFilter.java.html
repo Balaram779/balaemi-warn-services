@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TraceIdFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">emi-warning-service</a> &gt; <a href="index.source.html" class="el_package">com.smartbalaram.emi.config</a> &gt; <span class="el_source">TraceIdFilter.java</span></div><h1>TraceIdFilter.java</h1><pre class="source lang-java linenums">package com.smartbalaram.emi.config;
+
+import jakarta.servlet.*;
+import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.UUID;
+
+/**
+ * 🌐 TraceIdFilter is a servlet filter that generates a unique trace ID
+ * for every HTTP request and stores it in the MDC (Mapped Diagnostic Context).
+ * 
+ * ✅ This enables structured and traceable logging across microservices
+ * without modifying individual log statements.
+ *
+ * 📍 MDC.put(&quot;traceId&quot;, ...) automatically injects the traceId into log patterns
+ * if configured in logback-spring.xml.
+ */
+@Component
+<span class="fc" id="L21">public class TraceIdFilter implements Filter {</span>
+
+    // Constant MDC key for trace ID
+    private static final String TRACE_ID = &quot;traceId&quot;;
+
+    /**
+     * This method is called for every HTTP request.
+     *
+     * 1. Generates a new UUID trace ID
+     * 2. Puts it into MDC so that logs include this trace ID
+     * 3. Ensures the trace ID is removed after the request completes (finally block)
+     *
+     * @param request  incoming HTTP servlet request
+     * @param response outgoing HTTP servlet response
+     * @param chain    the servlet filter chain
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        // 1️⃣ Generate a random trace ID
+<span class="fc" id="L44">        String traceId = UUID.randomUUID().toString();</span>
+
+        // 2️⃣ Add it to MDC (so logs can include it)
+<span class="fc" id="L47">        MDC.put(TRACE_ID, traceId);</span>
+
+        try {
+            // 3️⃣ Continue with next filter/controller
+<span class="fc" id="L51">            chain.doFilter(request, response);</span>
+        } finally {
+            // 4️⃣ Always clean up MDC after request
+<span class="fc" id="L54">            MDC.remove(TRACE_ID);</span>
+        }
+<span class="fc" id="L56">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

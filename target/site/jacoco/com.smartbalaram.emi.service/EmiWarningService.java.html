@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmiWarningService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">emi-warning-service</a> &gt; <a href="index.source.html" class="el_package">com.smartbalaram.emi.service</a> &gt; <span class="el_source">EmiWarningService.java</span></div><h1>EmiWarningService.java</h1><pre class="source lang-java linenums">package com.smartbalaram.emi.service;
+
+import com.smartbalaram.emi.kafka.KafkaProducerService;
+import com.smartbalaram.emi.model.EmiRequest;
+import com.smartbalaram.emi.model.EmiResponse;
+import com.smartbalaram.emi.repository.EmiWarningRepository;
+import com.smartbalaram.emi.util.RiskLevelUtils;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static com.smartbalaram.emi.util.AppConstants.*;
+
+@Service
+<span class="fc" id="L18">@RequiredArgsConstructor</span>
+public class EmiWarningService {
+
+    private final KafkaProducerService kafkaProducerService;
+    private final EmiWarningRepository emiWarningRepository;
+<span class="fc" id="L23">    private static final Logger logger = LoggerFactory.getLogger(EmiWarningService.class);</span>
+
+    /**
+     * ✅ Core logic to evaluate EMI risk using AI-like scoring
+     */
+    public EmiResponse evaluateEmi(EmiRequest request) {
+<span class="fc" id="L29">        logger.info(&quot;🔍 Evaluating EMI for user: {}&quot;, request.getUserId());</span>
+
+<span class="fc" id="L31">        double emiPercentage = (request.getTotalEmiAmount() / request.getMonthlyIncome()) * 100;</span>
+
+<span class="fc" id="L33">        String riskLevel = RiskLevelUtils.determineRiskLevel(</span>
+                emiPercentage,
+<span class="fc" id="L35">                request.getMissedEmiCount(),</span>
+<span class="fc" id="L36">                request.getLoanTenureMonths()</span>
+        );
+
+<span class="fc" id="L39">        String warning = RiskLevelUtils.getWarningMessage(riskLevel);</span>
+
+<span class="fc" id="L41">        double suggestedMaxEmi = Math.round(request.getMonthlyIncome() * RECOMMENDED_EMI_CAP_RATIO);</span>
+
+<span class="fc" id="L43">        emiWarningRepository.save(request);</span>
+<span class="fc" id="L44">        kafkaProducerService.sendEmiWarning(request.getUserId(),</span>
+<span class="fc" id="L45">                buildResponse(request, emiPercentage, riskLevel, warning, suggestedMaxEmi)</span>
+        );
+
+<span class="fc" id="L48">        return buildResponse(request, emiPercentage, riskLevel, warning, suggestedMaxEmi);</span>
+    }
+
+    public EmiResponse saveEmi(EmiRequest request) {
+<span class="nc" id="L52">        logger.info(&quot;💾 Saving EMI for user: {}&quot;, request.getUserId());</span>
+
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        request.setWarning(request.getTotalEmiAmount() &gt; 0.5 * request.getMonthlyIncome());</span>
+<span class="nc" id="L55">        emiWarningRepository.save(request);</span>
+
+<span class="nc" id="L57">        return EmiResponse.builder()</span>
+<span class="nc" id="L58">                .userId(request.getUserId())</span>
+<span class="nc" id="L59">                .monthlyIncome(request.getMonthlyIncome())</span>
+<span class="nc" id="L60">                .totalEmiAmount(request.getTotalEmiAmount())</span>
+<span class="nc" id="L61">                .warning(request.isWarning())</span>
+<span class="nc" id="L62">                .build();</span>
+    }
+
+    public List&lt;EmiRequest&gt; getAllEmiRecords() {
+<span class="nc" id="L66">        logger.info(&quot;📥 Fetching all EMI records&quot;);</span>
+<span class="nc" id="L67">        return emiWarningRepository.findAll();</span>
+    }
+
+    public EmiRequest getEmiById(String userId) {
+<span class="nc" id="L71">        logger.info(&quot;🔍 Fetching EMI by userId: {}&quot;, userId);</span>
+<span class="nc" id="L72">        return emiWarningRepository.findById(userId)</span>
+<span class="nc" id="L73">        		.orElse(null); // ✅ avoid crashing</span>
+    }
+
+
+    public void deleteEmiById(String userId) {
+<span class="nc" id="L78">        logger.warn(&quot;🗑️ Deleting EMI record for userId: {}&quot;, userId);</span>
+<span class="nc" id="L79">        emiWarningRepository.deleteById(userId);</span>
+<span class="nc" id="L80">    }</span>
+
+    public Double getRecommendedEmiCap(String userId, double monthlyIncome) {
+<span class="fc" id="L83">        return Double.valueOf(Math.round(monthlyIncome * 0.4));</span>
+    }
+
+
+    // ➤ Method #2: Dynamic percentage (for advanced configs)
+    public double getRecommendedCap(double income) {
+<span class="nc" id="L89">        return income * 0.5; // fallback logic (can be changed to config-based)</span>
+    }
+
+    public String getRiskLevel(double percentage) {
+<span class="nc" id="L93">        return RiskLevelUtils.determineRiskLevel(percentage, 0, 0);</span>
+    }
+
+    public List&lt;String&gt; getThresholdDetails() {
+<span class="nc" id="L97">        return List.of(</span>
+<span class="nc" id="L98">            RISK_LOW + &quot;: score ≤ &quot; + RiskLevelUtils.getScoreThresholdLow(),</span>
+<span class="nc" id="L99">            RISK_MODERATE + &quot;: score ≤ &quot; + RiskLevelUtils.getScoreThresholdMedium(),</span>
+<span class="nc" id="L100">            RISK_HIGH + &quot;: score &gt; &quot; + RiskLevelUtils.getScoreThresholdMedium()</span>
+        );
+    }
+
+    private EmiResponse buildResponse(EmiRequest request, double emiPercentage, String riskLevel,
+                                      String warningMessage, double suggestedMaxEmi) {
+<span class="fc" id="L106">        return EmiResponse.builder()</span>
+<span class="fc" id="L107">                .userId(request.getUserId())</span>
+<span class="fc" id="L108">                .monthlyIncome(request.getMonthlyIncome())</span>
+<span class="fc" id="L109">                .totalEmiAmount(request.getTotalEmiAmount())</span>
+<span class="fc" id="L110">                .warning(request.isWarning())</span>
+<span class="fc" id="L111">                .emiPercentage(Math.round(emiPercentage * 100.0) / 100.0)</span>
+<span class="fc" id="L112">                .riskLevel(riskLevel)</span>
+<span class="fc" id="L113">                .warningMessage(warningMessage)</span>
+<span class="fc" id="L114">                .suggestedMaxEmi(suggestedMaxEmi)</span>
+<span class="fc" id="L115">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

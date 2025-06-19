@@ -1,0 +1,27 @@
+server:
+  port: 8082
+
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      database: emiwarning-db
+
+  graphql:
+    path: /graphql
+    graphiql:
+      enabled: true
+      path: /graphiql
+    voyager:
+      enabled: true
+      path: /voyager
+
+jwt:
+  secret: ${JWT_SECRET}   # 🔐 Inject via Render environment variables
+
+risk:
+  weight-emi-percent: 0.6
+  weight-missed-emi: 2.0
+  weight-tenure: 0.1
+  score-threshold-low: 30
+  score-threshold-medium: 60

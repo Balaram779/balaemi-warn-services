@@ -1,0 +1,2 @@
+jwt:
+  secret: dev-smartbalaram-jwt-secret-key-2025!

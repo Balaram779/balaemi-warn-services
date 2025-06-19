@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmiRequestGraphQLMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">emi-warning-service</a> &gt; <a href="index.source.html" class="el_package">com.smartbalaram.emi.graphql</a> &gt; <span class="el_source">EmiRequestGraphQLMapper.java</span></div><h1>EmiRequestGraphQLMapper.java</h1><pre class="source lang-java linenums">package com.smartbalaram.emi.graphql;
+
+import com.smartbalaram.emi.model.EmiRequest;
+import com.smartbalaram.emi.util.RiskLevelUtils;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.stereotype.Controller;
+
+/**
+ * GraphQL schema mapping for computed EMIRequest fields.
+ */
+@Controller
+<span class="nc" id="L12">public class EmiRequestGraphQLMapper {</span>
+
+    @SchemaMapping(typeName = &quot;EmiRequest&quot;, field = &quot;emiPercentage&quot;)
+    public double getEmiPercentage(EmiRequest request) {
+<span class="nc bnc" id="L16" title="All 2 branches missed.">        if (request.getMonthlyIncome() == 0) return 0;</span>
+<span class="nc" id="L17">        return (request.getTotalEmiAmount() * 100.0) / request.getMonthlyIncome();</span>
+    }
+
+    @SchemaMapping(typeName = &quot;EmiRequest&quot;, field = &quot;riskLevel&quot;)
+    public String getRiskLevel(EmiRequest request) {
+<span class="nc" id="L22">        double percentage = (request.getTotalEmiAmount() * 100.0) / request.getMonthlyIncome();</span>
+<span class="nc" id="L23">        return RiskLevelUtils.determineRiskLevel(percentage, 0, 0);</span>
+    }
+
+    @SchemaMapping(typeName = &quot;EmiRequest&quot;, field = &quot;warningMessage&quot;)
+    public String getWarningMessage(EmiRequest request) {
+<span class="nc" id="L28">        double percentage = (request.getTotalEmiAmount() * 100.0) / request.getMonthlyIncome();</span>
+<span class="nc" id="L29">        String risk = RiskLevelUtils.determineRiskLevel(percentage, 0, 0);</span>
+<span class="nc" id="L30">        return RiskLevelUtils.getWarningMessage(risk);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

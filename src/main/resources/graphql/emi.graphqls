@@ -1,0 +1,44 @@
+type Query {
+  allEmiRecords: [EmiRequest]
+  getEmiById(userId: String!): EmiRequest
+  getRiskLevel(percentage: Float!): String
+  getThresholdDetails: [String]
+  getRecommendedCap(monthlyIncome: Float!): Float
+}
+
+type Mutation {
+  evaluateEmi(input: EmiInput!): EmiResponse
+  saveEmi(input: EmiInput!): EmiResponse
+  deleteEmiById(userId: String!): Boolean
+}
+
+input EmiInput {
+  userId: String!
+  monthlyIncome: Float!
+  totalEmiAmount: Float!
+  missedEmiCount: Int!
+  loanTenureMonths: Int!
+}
+
+type EmiRequest {
+  userId: String
+  monthlyIncome: Float
+  totalEmiAmount: Float
+  missedEmiCount: Int
+  loanTenureMonths: Int
+  warning: Boolean
+  emiPercentage: Float
+  riskLevel: String
+  warningMessage: String
+}
+
+type EmiResponse {
+  userId: String
+  monthlyIncome: Float
+  totalEmiAmount: Float
+  warning: Boolean
+  emiPercentage: Float
+  riskLevel: String
+  warningMessage: String
+  suggestedMaxEmi: Float
+}

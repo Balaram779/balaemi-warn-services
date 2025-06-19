@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmiGraphQLController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">emi-warning-service</a> &gt; <a href="index.source.html" class="el_package">com.smartbalaram.emi.graphql</a> &gt; <span class="el_source">EmiGraphQLController.java</span></div><h1>EmiGraphQLController.java</h1><pre class="source lang-java linenums">package com.smartbalaram.emi.graphql;
+
+import com.smartbalaram.emi.model.EmiRequest;
+import com.smartbalaram.emi.model.EmiResponse;
+import com.smartbalaram.emi.service.EmiWarningService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
+
+/**
+ * GraphQL controller for EMI operations.
+ * Supports querying and mutating EMI data using GraphQL schema.
+ */
+@Controller
+<span class="nc" id="L19">@RequiredArgsConstructor // Injects final emiWarningService automatically</span>
+public class EmiGraphQLController {
+
+    private final EmiWarningService emiWarningService;
+
+    
+    /**
+     * GraphQL Mutation: Evaluate EMI risk based on input request.
+     * @param input EMIRequest object containing EMI and income.
+     * @return EMIResponse with risk info.
+     */
+
+    @MutationMapping
+    public EmiResponse evaluateEmi(@Argument(&quot;input&quot;) EmiRequest input) {
+<span class="nc" id="L33">        return emiWarningService.evaluateEmi(input);</span>
+    }
+    
+    /**
+     * GraphQL Query: Get the risk level based on EMI-to-income percentage.
+     * @param percentage EMI percentage of income.
+     * @return Risk level string.
+     */
+    @QueryMapping
+    public String getRiskLevel(@Argument(&quot;percentage&quot;) double percentage) {
+<span class="nc" id="L43">        return emiWarningService.getRiskLevel(percentage);</span>
+    }
+   
+    /**
+     * GraphQL Query: Get all EMI records stored in the database.
+     * @return List of EMIRequest objects.
+     */
+    @QueryMapping
+    public List&lt;EmiRequest&gt; allEmiRecords() {
+<span class="nc" id="L52">        return emiWarningService.getAllEmiRecords();</span>
+    }
+    
+    /**
+     * GraphQL Query: Get EMI record by user ID.
+     * @param userId The unique user ID.
+     * @return Corresponding EMIRequest record.
+     */
+    @QueryMapping
+    public EmiRequest getEmiById(@Argument(&quot;userId&quot;) String userId) {
+<span class="nc" id="L62">        return emiWarningService.getEmiById(userId);</span>
+    }
+
+
+    /**
+     * GraphQL Query: Get all EMI threshold definitions (for LOW, MODERATE, HIGH).
+     * @return List of string thresholds.
+     */
+    @QueryMapping
+    public List&lt;String&gt; getThresholdDetails() {
+<span class="nc" id="L72">        return emiWarningService.getThresholdDetails();</span>
+    }
+
+
+    /**
+     * GraphQL Mutation: Save EMI record to the database.
+     * @param input EMIRequest object to save.
+     * @return Saved EMIResponse.
+     */
+    @MutationMapping
+    public EmiResponse saveEmi(@Argument(&quot;input&quot;) EmiRequest input) {
+<span class="nc" id="L83">        return emiWarningService.saveEmi(input);</span>
+    }
+
+    /**
+     * GraphQL Mutation: Delete EMI record by user ID.
+     * @param userId The ID to delete.
+     * @return true if deletion succeeded.
+     */
+    @MutationMapping
+    public boolean deleteEmiById(@Argument(&quot;userId&quot;) String userId) {
+<span class="nc" id="L93">        emiWarningService.deleteEmiById(userId);</span>
+<span class="nc" id="L94">        return true;</span>
+    }
+    
+    @QueryMapping
+    public Double getRecommendedCap(@Argument(&quot;monthlyIncome&quot;) double monthlyIncome) {
+<span class="nc" id="L99">        return emiWarningService.getRecommendedCap(monthlyIncome);</span>
+    }
+
+    
+}
+
+/*
+  @QueryMapping	--&gt;Used for queries (read-only data fetching)
+  @MutationMapping--&gt;	Used for mutations (data-changing operations)Why you need @MutationMapping
+You use @MutationMapping when your method:
+Changes server-side data
+Saves, updates, deletes, or triggers any write operation */
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

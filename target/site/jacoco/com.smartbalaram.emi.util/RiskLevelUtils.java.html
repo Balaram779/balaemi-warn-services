@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RiskLevelUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">emi-warning-service</a> &gt; <a href="index.source.html" class="el_package">com.smartbalaram.emi.util</a> &gt; <span class="el_source">RiskLevelUtils.java</span></div><h1>RiskLevelUtils.java</h1><pre class="source lang-java linenums">package com.smartbalaram.emi.util;
+
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import org.springframework.stereotype.Component;
+
+import static com.smartbalaram.emi.util.AppConstants.*;
+/**
+ * RiskLevelUtils: Calculates EMI risk using AI-style scoring (weighted formula)
+ * - Inputs: EMI%, missed EMIs, loan tenure
+ * - Config-driven weights &amp; thresholds
+ */
+
+@Component
+@Getter
+<span class="nc" id="L16">public class RiskLevelUtils {</span>
+
+    // =======================
+    // 🔧 Configurable Weights
+    // =======================
+    private static double weightEmiPercent;
+    private static double weightMissedEmi;
+    private static double weightTenure;
+
+    // =========================
+    // 🔧 Risk Score Thresholds
+    // =========================
+    private static double scoreThresholdLow;
+    private static double scoreThresholdMedium;
+
+    // ======================
+    // ✅ Initialize Defaults
+    // ======================
+    @PostConstruct
+    public void init() {
+        // Default values can later be overridden using setWeights/setThresholds
+<span class="nc" id="L37">        weightEmiPercent = 1.0;</span>
+<span class="nc" id="L38">        weightMissedEmi = 5.0;</span>
+<span class="nc" id="L39">        weightTenure = 0.2;</span>
+
+<span class="nc" id="L41">        scoreThresholdLow = 30.0;</span>
+<span class="nc" id="L42">        scoreThresholdMedium = 60.0;</span>
+<span class="nc" id="L43">    }</span>
+
+    // ==============================
+    // ✅ Public Configuration Setup
+    // ==============================
+
+    public static void setWeights(double emiWeight, double missedEmiWeight, double tenureWeight) {
+<span class="fc" id="L50">        weightEmiPercent = emiWeight;</span>
+<span class="fc" id="L51">        weightMissedEmi = missedEmiWeight;</span>
+<span class="fc" id="L52">        weightTenure = tenureWeight;</span>
+<span class="fc" id="L53">    }</span>
+
+    public static void setThresholds(double low, double medium) {
+<span class="fc" id="L56">        scoreThresholdLow = low;</span>
+<span class="fc" id="L57">        scoreThresholdMedium = medium;</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * 🔍 AI Risk Scoring Logic
+     * Calculates weighted score and assigns risk level
+     */
+    public static String determineRiskLevel(double emiPercent, int missedEmis, int tenureMonths) {
+<span class="fc" id="L65">        double score = (emiPercent * weightEmiPercent)</span>
+                     + (missedEmis * weightMissedEmi)
+                     + (tenureMonths * weightTenure); //100+0+20
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (score &lt;= scoreThresholdLow) return RISK_LOW;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        else if (score &lt;= scoreThresholdMedium) return RISK_MODERATE;</span>
+<span class="fc" id="L71">        else return RISK_HIGH;</span>
+    }
+
+    /**
+     * 📢 Return Warning Message based on Risk Level
+     */
+    public static String getWarningMessage(String riskLevel) {
+<span class="pc bpc" id="L78" title="1 of 4 branches missed.">        return switch (riskLevel) {</span>
+<span class="fc" id="L79">            case RISK_LOW      -&gt; MESSAGE_SAFE;</span>
+<span class="fc" id="L80">            case RISK_MODERATE -&gt; MESSAGE_CAUTION;</span>
+<span class="fc" id="L81">            case RISK_HIGH     -&gt; MESSAGE_RISK;</span>
+<span class="nc" id="L82">            default            -&gt; MESSAGE_INVALID;</span>
+        };
+    }
+
+    public static double getScoreThresholdLow() {
+<span class="nc" id="L87">        return scoreThresholdLow;</span>
+    }
+
+    public static double getScoreThresholdMedium() {
+<span class="nc" id="L91">        return scoreThresholdMedium;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

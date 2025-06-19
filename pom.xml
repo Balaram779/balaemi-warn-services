@@ -119,6 +119,7 @@
 		</dependency>
 	</dependencies>
 
+
 	<build>
 		<plugins>
 			<!-- Spring Boot Plugin -->
@@ -126,6 +127,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.boot.version}</version>
+				<configuration>
+					<mainClass>com.smartbalaram.emi.EmiWarningServiceApplication</mainClass> <!--
+					✅ Change as per your main class -->
+				</configuration>
+
 			</plugin>
 
 			<!-- Java 17 Compiler Plugin -->

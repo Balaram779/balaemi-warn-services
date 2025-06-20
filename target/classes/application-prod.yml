@@ -16,8 +16,8 @@ spring:
       enabled: true
       path: /voyager
 
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVERS:disabled}  # Optional fallback
+#  kafka:
+#    bootstrap-servers: ${KAFKA_SERVERS:disabled}  # Optional fallback
 
 jwt:
   secret: ${JWT_SECRET}   # ✅ Inject via Render secret environment var

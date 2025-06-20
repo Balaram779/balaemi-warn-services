@@ -18,7 +18,7 @@ import static com.smartbalaram.emi.util.AppConstants.*;
 @RequiredArgsConstructor
 public class EmiWarningService {
 
-    private final KafkaProducerService kafkaProducerService;
+//    private final KafkaProducerService kafkaProducerService;
     private final EmiWarningRepository emiWarningRepository;
     private static final Logger logger = LoggerFactory.getLogger(EmiWarningService.class);
 
@@ -41,9 +41,8 @@ public class EmiWarningService {
         double suggestedMaxEmi = Math.round(request.getMonthlyIncome() * RECOMMENDED_EMI_CAP_RATIO);
 
         emiWarningRepository.save(request);
-        kafkaProducerService.sendEmiWarning(request.getUserId(),
-                buildResponse(request, emiPercentage, riskLevel, warning, suggestedMaxEmi)
-        );
+       // kafkaProducerService.sendEmiWarning(request.getUserId(),
+               // buildResponse(request, emiPercentage, riskLevel, warning, suggestedMaxEmi));
 
         return buildResponse(request, emiPercentage, riskLevel, warning, suggestedMaxEmi);
     }

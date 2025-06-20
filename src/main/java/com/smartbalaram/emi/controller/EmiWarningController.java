@@ -5,6 +5,7 @@ import com.smartbalaram.emi.model.EmiResponse;
 import com.smartbalaram.emi.service.EmiWarningService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class EmiWarningController {
 	 * @param request Incoming request with EMI details.
 	 * @return EMI evaluation response containing risk level and message.
 	 */
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@PostMapping("/warn")
 	public ResponseEntity<EmiResponse> getEmiWarning(@RequestBody EmiRequest request) {
 		return ResponseEntity.ok(emiWarningService.evaluateEmi(request));

@@ -3,19 +3,4 @@ server:
 
 spring:
   profiles:
-    active: prod  # ✅ On cloud, this should load application-prod.yml
-
-logging:
-  level:
-    org.springframework.graphql: DEBUG
-
-# Default values or fallbacks for local development only (optional)
-# These are overridden by profile-specific YAML files
-#REST (protected):
-#https://emi-warning-service.onrender.com/api/emi/warn
-#
-#GraphQL:
-#https://emi-warning-service.onrender.com/graphql
-#
-#GraphiQL UI (if enabled):
-#https://emi-warning-service.onrender.com/graphiql
+    active: prod  # Activated on cloud (either declared here or via SPRING_PROFILES_ACTIVE)

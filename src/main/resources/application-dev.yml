@@ -7,11 +7,11 @@ spring:
       uri: mongodb+srv://b9048635:p1pPLXpUFQGMSSId@cluster0.man4orn.mongodb.net/emiwarning-db?retryWrites=true&w=majority&tls=true
       database: emiwarning-db
 
-  kafka:
-    bootstrap-servers: localhost:29092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#  kafka:
+#    bootstrap-servers: localhost:29092
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   graphql:
     path: /graphql

@@ -20,6 +20,24 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/graphql", "/graphiql", "/voyager").permitAll()
+                .requestMatchers("/api/emi/**").hasAnyRole("USER", "ADMIN") // ✅ role check here
+                .anyRequest().denyAll()
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    
+    
+    /* @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(
                         "/api/emi/**",
                         "/graphql",
@@ -32,7 +50,7 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
+    } *
     
    /* @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

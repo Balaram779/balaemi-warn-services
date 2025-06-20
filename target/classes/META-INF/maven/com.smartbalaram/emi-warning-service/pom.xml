@@ -131,7 +131,13 @@
 					<mainClass>com.smartbalaram.emi.EmiWarningServiceApplication</mainClass> <!--
 					✅ Change as per your main class -->
 				</configuration>
-
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Java 17 Compiler Plugin -->

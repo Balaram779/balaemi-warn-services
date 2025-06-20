@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Controller
 @RequiredArgsConstructor // Injects final emiWarningService automatically
-@CrossOrigin(origins = "*") // ✅ Allow local React access
+//@CrossOrigin(origins = "*") // ✅ Allow local React access
 public class EmiGraphQLController {
 
     private final EmiWarningService emiWarningService;

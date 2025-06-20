@@ -4,7 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      uri: ${MONGO_URI}
+      uri: ${MONGO_URI}   # ✅ Injected via Render env var
       database: emiwarning-db
 
   graphql:
@@ -16,8 +16,11 @@ spring:
       enabled: true
       path: /voyager
 
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVERS:disabled}  # Optional fallback
+
 jwt:
-  secret: ${JWT_SECRET}   # 🔐 Inject via Render environment variables
+  secret: ${JWT_SECRET}   # ✅ Inject via Render secret environment var
 
 risk:
   weight-emi-percent: 0.6

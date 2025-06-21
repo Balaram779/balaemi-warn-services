@@ -15,7 +15,7 @@ public class WebConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                             "http://localhost:5173",
-                            "https://smartbalaram-ui.onrender.com"
+                            "https://smartbalaramai-ui.netlify.app"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")

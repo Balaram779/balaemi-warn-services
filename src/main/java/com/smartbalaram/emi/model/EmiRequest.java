@@ -1,5 +1,6 @@
 package com.smartbalaram.emi.model;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Document(collection = "Emi")
 public class EmiRequest {
+	
+	@Indexed(unique = true)
     private String userId;
     private double monthlyIncome;
     private double totalEmiAmount;

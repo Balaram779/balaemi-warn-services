@@ -75,7 +75,7 @@ public class EmiWarningService {
 
     public void deleteEmiById(String userId) {
         logger.warn("🗑️ Deleting EMI record for userId: {}", userId);
-        emiWarningRepository.deleteById(userId);
+        emiWarningRepository.deleteByUserId(userId);
     }
 
     public Double getRecommendedEmiCap(String userId, double monthlyIncome) {

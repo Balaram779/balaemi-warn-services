@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmiWarningRepository extends MongoRepository<EmiRequest, String> {
+	void deleteByUserId(String userId);
+
 }
